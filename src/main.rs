@@ -9,29 +9,23 @@ fn main() {
     let mut stdout = AlternateScreen::from(stdout().into_raw_mode().unwrap());
     let mut quit = false;
     write!(stdout, "{}", cursor::Hide).unwrap();
+
     while !quit {
         thread::sleep(Duration::from_secs(1));
         let current_time = chrono::offset::Local::now();
-        let formatted = format!("{}", current_time.format("%H:%M:%S"));
+        let formatted = format!("{}", current_time.format("%H:%M"));
         let (center_x, center_y) = termion::terminal_size().unwrap();
         let (center_x, center_y) = (center_x/2, center_y/2) ;
         write!(stdout, "{}", termion::clear::All).unwrap();
-        for (i,c) in formatted.chars().enumerate(){
-            if c.is_numeric() {
-                text::draw(
-                    &mut stdout,
-                    c.to_digit(10).unwrap().try_into().unwrap(),
-                    (center_x as isize +  4 * ((( i as isize - formatted.len() as  isize )  + (formatted.len()/2 )as isize))) as u16,
-                    center_y - 2
-                          );
-            }else{
-                text::draw(
-                    &mut stdout,
-                    10,
-                    (center_x as isize +  4 * ((( i as isize - formatted.len() as  isize )  + (formatted.len()/2 )as isize))) as u16,
-                    center_y - 2
-                          );
-            }
+
+        for (index,character) in formatted.chars().enumerate(){
+            let char_to_write = character.to_digit(10).unwrap_or(10) as u16;
+            text::draw(
+                &mut stdout,
+                char_to_write,
+                7 + (center_x as isize +  7 * ((( index as isize - formatted.len() as  isize )  + (formatted.len()/2 )as isize))) as u16,
+                center_y - 2
+            );
         }
         stdout.flush().unwrap();
 

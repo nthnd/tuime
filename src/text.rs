@@ -122,7 +122,7 @@
             write!(
                 stdout,
                 "{}",
-                if ascii_num[i] == 0 {" "} else {"█"},
+                if ascii_num[i] == 0 {"  "} else {"██"},
             ).unwrap();
         }
     }

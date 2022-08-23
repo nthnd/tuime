@@ -1,6 +1,5 @@
 use std::io::{ Write,stdout};
 use termion::{screen::*,raw::IntoRawMode,cursor,event::*, input::TermRead};
-use chrono;
 use std::thread;
 use std::time::Duration;
 mod text;
@@ -30,7 +29,7 @@ fn main() {
             text::draw(
                 &mut stdout,
                 char_to_write,
-                7 + (center_x as isize +  7 * ((( index as isize - formatted.len() as  isize )  + (formatted.len()/2 )as isize))) as u16,
+                7 + (center_x as isize +  7 * (( index as isize - formatted.len() as  isize )  + (formatted.len()/2 )as isize)) as u16,
                 center_y - 2
             );
         }
@@ -40,17 +39,19 @@ fn main() {
         for input_event in &mut input_events{
             match input_event{
                 Ok(e)=>{
-                    match e{
-                        Event::Key(key) => {
-                            match key {
-                                Key::Char('q') => {
-                                    quit = true;
-                                    break;
-                                }
-                                _ => {}
+                    if let Event::Key(key) = e{
+                        match key {
+                            Key::Char('q') => {
+                                quit = true;
+                                break;
                             }
+                            Key::Char(x) => {
+                                if x.is_ascii_digit(){
+                                    text::apply_color(x.to_digit(10).unwrap(), &mut stdout);
+                                }
+                            }
+                            _ => {}
                         }
-                        _ => {}
                     }
                 },
                 Err(_e) => {

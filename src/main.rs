@@ -1,67 +1,44 @@
-use std::io::{ Write,stdout};
-use termion::{screen::*,raw::IntoRawMode,cursor,event::*, input::TermRead};
-use std::thread;
+use anyhow::Result;
+
 use std::time::Duration;
-mod text;
-fn main() {
-    //initialize and create an alternate screen
-    let mut input_events = termion::async_stdin().events();
-    let mut stdout = AlternateScreen::from(stdout().into_raw_mode().unwrap());
-    let mut quit = false;
-    write!(stdout, "{}", cursor::Hide).unwrap();
+use tokio::time::interval;
 
-    //main loop
-    while !quit {
+use crossterm::{
+    cursor,
+    event::{Event, EventStream, KeyCode},
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+};
 
-        //tick
-        thread::sleep(Duration::from_secs(1));
-        let current_time = chrono::offset::Local::now();
+use futures::{FutureExt, StreamExt};
 
-        //get current time
-        let formatted = format!("{}", current_time.format("%H:%M"));
-        let (center_x, center_y) = termion::terminal_size().unwrap();
-        let (center_x, center_y) = (center_x/2, center_y/2) ;
+mod display;
 
-        //draw current time
-        write!(stdout, "{}", termion::clear::All).unwrap();
-        for (index,character) in formatted.chars().enumerate(){
-            let char_to_write = character.to_digit(10).unwrap_or(10) as u16;
-            text::draw(
-                &mut stdout,
-                char_to_write,
-                7 + (center_x as isize +  7 * (( index as isize - formatted.len() as  isize )  + (formatted.len()/2 )as isize)) as u16,
-                center_y - 2
-            );
-        }
-        stdout.flush().unwrap();
-        
-        //read input events and quit if q is pressed
-        for input_event in &mut input_events{
-            match input_event{
-                Ok(e)=>{
-                    if let Event::Key(key) = e{
-                        match key {
-                            Key::Char('q') => {
-                                quit = true;
-                                break;
-                            }
-                            Key::Char(x) => {
-                                if x.is_ascii_digit(){
-                                    text::apply_color(x.to_digit(10).unwrap(), &mut stdout);
-                                }
-                            }
-                            _ => {}
-                        }
+#[tokio::main]
+async fn main() -> Result<()> {
+    enable_raw_mode()?;
+    crossterm::execute!(std::io::stdout(), EnterAlternateScreen, cursor::Hide)?;
+
+    let mut reader = EventStream::new();
+    let mut interval = interval(Duration::from_secs(1));
+
+    loop {
+        tokio::select! {
+            maybe_event = reader.next().fuse() => {
+                if let Some(Ok(event)) = maybe_event {
+                    if Event::Key(KeyCode::Char('q').into()) == event {
+                        break
                     }
-                },
-                Err(_e) => {
-                    panic!("event_error");
                 }
             }
+
+            _ = interval.tick() => {
+                display::print_time()
+            }
+
         }
     }
-    
-    //back to main screen
-    write!(stdout, "{}{}",ToMainScreen, cursor::Show).unwrap();
-    stdout.flush().unwrap();
+
+    disable_raw_mode()?;
+    crossterm::execute!(std::io::stdout(), LeaveAlternateScreen, cursor::Show)?;
+    Ok(())
 }

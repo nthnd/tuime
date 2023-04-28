@@ -7,15 +7,29 @@ pub struct Args {
     #[arg(long, default_value_t = String::from("%H:%M"))]
     pub format: String,
 
-    /// Set Colors
-    #[arg(short, long)]
+    #[arg(
+        short,
+        long,
+        help = 
+r"Supply a color to use for rendering
+If the font supports it you may supply mutliple colors : -c red -c green ...
+To see what fonts support multiple colors, see https://github.com/dominikwilkowski/cfonts"
+    )]
     pub colors: Vec<String>,
 
-    /// Set Font
-    #[arg(short, long, default_value_t = String::from("Block"))]
+    #[arg(
+        short, 
+        long, 
+        default_value_t = String::from("Block"),
+        help = 
+r"Set Font
+To see what fonts you can use, go to https://github.com/dominikwilkowski/cfonts"
+    )]
     pub font: String,
 
-    /// Set a gradient
-    #[arg(short, long)]
+    #[arg(short, long, help=
+r#"Set a gradient
+use a gradient instead of regular colors : -g "\#ffaabb" -g "\#ee22ff" ..."#
+    )]
     pub gradient: Vec<String>,
 }

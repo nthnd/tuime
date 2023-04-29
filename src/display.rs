@@ -1,6 +1,7 @@
 use std::io::Write;
 
 use cfonts::{render, Align, Colors, Fonts, Options};
+use chrono::{FixedOffset, Utc};
 use crossterm::{cursor, style::Print, terminal, QueueableCommand};
 
 use crate::{args::Args, error::TuimeError};
@@ -48,7 +49,15 @@ fn font_from_str(s: &str) -> Fonts {
 }
 
 pub fn get_time_str(args: &Args) -> String {
-    let time = chrono::Local::now().format(&args.format).to_string();
+    let time = match args.utc_offset.as_ref() {
+        None => chrono::Local::now().format(&args.format).to_string(),
+        Some(offset) => Utc::now()
+            .with_timezone(&FixedOffset::east_opt(*offset).unwrap())
+            .format(&args.format)
+            .to_string(),
+    };
+
+    // let time = chrono::Local::now().format(&args.format).to_string();
 
     let time_str = render(Options {
         text: time,

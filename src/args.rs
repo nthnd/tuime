@@ -32,4 +32,12 @@ r#"Set a gradient
 use a gradient instead of regular colors : -g "\#ffaabb" -g "\#ee22ff" ..."#
     )]
     pub gradient: Vec<String>,
+
+    #[arg(short, long, help=
+r#"Set the utc offset 
+If this argument is not supplied, we will try to use the local time
+Supplied as +/-<secs>. Eg: tuime -u="-3600", tuime -u="+7200"
+"#)]
+    pub utc_offset: Option<i32>,
+
 }

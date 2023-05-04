@@ -37,7 +37,11 @@ async fn main() -> Result<()> {
     loop {
         tokio::select! {
             maybe_event = reader.next().fuse() => {
-                if matches!(maybe_event, Some(Ok(Event::Key(key))) if key == KeyCode::Char('q').into()) {break}
+                if let Some(Ok(Event::Key(q))) = maybe_event {
+                    if args.screensaver | (q.code == KeyCode::Char('q')) {
+                        break;
+                    }
+                }
             }
 
             _ = interval.tick() => {

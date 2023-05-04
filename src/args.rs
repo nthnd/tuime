@@ -40,4 +40,6 @@ Supplied as +/-<secs>. Eg: tuime -u="-3600", tuime -u="+7200"
 "#)]
     pub utc_offset: Option<i32>,
 
+    #[arg(short, long, help="Screensaver mode")]
+    pub screensaver: bool,
 }

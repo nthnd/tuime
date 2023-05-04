@@ -1,54 +1,12 @@
 use std::io::Write;
 
-use cfonts::{render, Align, Colors, Fonts, Options};
+use cfonts::{render, Align, Options};
 use chrono::{FixedOffset, Utc};
 use crossterm::{cursor, style::Print, terminal, QueueableCommand};
 
-use crate::{args::Args, error::TuimeError};
+use crate::{args::Args, error::TuimeError, config::Config};
 
-fn color_from_str(s: String) -> Colors {
-    match s.to_lowercase().as_str() {
-        "black" => Colors::Black,
-        "red" => Colors::Red,
-        "green" => Colors::Green,
-        "yellow" => Colors::Yellow,
-        "blue" => Colors::Blue,
-        "magenta" => Colors::Magenta,
-        "cyan" => Colors::Cyan,
-        "white" => Colors::White,
-        "gray" => Colors::Gray,
-        "redbright" => Colors::RedBright,
-        "greenbright" => Colors::GreenBright,
-        "yellowbright" => Colors::YellowBright,
-        "bluebright" => Colors::BlueBright,
-        "magentabright" => Colors::MagentaBright,
-        "cyanbright" => Colors::CyanBright,
-        "whitebright" => Colors::WhiteBright,
-        "candy" => Colors::Candy,
-        _ => Colors::System,
-    }
-}
-
-fn font_from_str(s: &str) -> Fonts {
-    match s.to_lowercase().as_str() {
-        "console" => Fonts::FontConsole,
-        "block" => Fonts::FontBlock,
-        "simpleblock" => Fonts::FontSimpleBlock,
-        "simple" => Fonts::FontSimple,
-        "3d" => Fonts::Font3d,
-        "simple3d" => Fonts::FontSimple3d,
-        "chrome" => Fonts::FontChrome,
-        "huge" => Fonts::FontHuge,
-        "shade" => Fonts::FontShade,
-        "slick" => Fonts::FontSlick,
-        "grid" => Fonts::FontGrid,
-        "pallet" => Fonts::FontPallet,
-        "tiny" => Fonts::FontTiny,
-        _ => Fonts::FontBlock,
-    }
-}
-
-pub fn get_time_str(args: &Args) -> String {
+pub fn get_time_str(args: &Args, cfg: &Config) -> String {
     let time = match args.utc_offset.as_ref() {
         None => chrono::Local::now().format(&args.format).to_string(),
         Some(offset) => Utc::now()
@@ -57,27 +15,20 @@ pub fn get_time_str(args: &Args) -> String {
             .to_string(),
     };
 
-    // let time = chrono::Local::now().format(&args.format).to_string();
-
     let time_str = render(Options {
         text: time,
         align: Align::Center,
-        font: font_from_str(&args.font),
+        font: cfg.font.to_owned(),
         gradient: args.gradient.clone(),
-        colors: args
-            .colors
-            .clone()
-            .into_iter()
-            .map(color_from_str)
-            .collect::<Vec<Colors>>(),
+        colors: cfg.color.to_owned(),
         ..Options::default()
     });
 
     time_str.text
 }
 
-pub fn print_time(args: &Args) -> Result<(), TuimeError> {
-    let time_str: Vec<String> = get_time_str(args)
+pub fn print_time(args: &Args, cfg: &Config) -> Result<(), TuimeError> {
+    let time_str: Vec<String> = get_time_str(args, cfg)
         .lines()
         .filter(|l| !l.is_empty())
         .map(str::to_string)

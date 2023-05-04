@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use config::Config;
 
 use std::time::Duration;
 use tokio::time::interval;
@@ -13,6 +14,7 @@ use crossterm::{
 use futures::{FutureExt, StreamExt};
 
 mod args;
+mod config;
 mod display;
 mod error;
 
@@ -28,6 +30,7 @@ async fn main() -> Result<()> {
         cursor::Hide
     }?;
 
+    let cfg = Config::new(&args.font, args.colors.clone());
     let mut reader = EventStream::new();
     let mut interval = interval(Duration::from_secs(1));
 
@@ -38,7 +41,7 @@ async fn main() -> Result<()> {
             }
 
             _ = interval.tick() => {
-                if let Err(e) = display::print_time(&args) {
+                if let Err(e) = display::print_time(&args, &cfg) {
                    println!("{:?}", e)
                 }
             }

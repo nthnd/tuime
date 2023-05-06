@@ -1,4 +1,5 @@
 use clap::Parser;
+use crate::{colors::Colors, fonts::Fonts};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -7,39 +8,36 @@ pub struct Args {
     #[arg(long, default_value_t = String::from("%H:%M"))]
     pub format: String,
 
-    #[arg(
-        short,
-        long,
-        help = 
-r"Supply a color to use for rendering
-If the font supports it you may supply mutliple colors : -c red -c green ...
-To see what fonts support multiple colors, see https://github.com/dominikwilkowski/cfonts"
-    )]
-    pub colors: Vec<String>,
+    /// Supply a color to use for rendering
+    ///
+    /// If the font supports it you may supply mutliple colors : -c red -c green ...
+    /// To see what fonts support multiple colors, see https://github.com/dominikwilkowski/cfonts"
+    #[arg(short, long, value_enum, verbatim_doc_comment)]
+    pub colors: Vec<Colors>,
 
+    /// Set the font
+    /// To see what fonts you can use, go to https://github.com/dominikwilkowski/cfonts"
     #[arg(
         short, 
         long, 
-        default_value_t = String::from("Block"),
-        help = 
-r"Set Font
-To see what fonts you can use, go to https://github.com/dominikwilkowski/cfonts"
+        value_enum,
+        default_value_t = Fonts::FontBlock,
+        verbatim_doc_comment
     )]
-    pub font: String,
+    pub font: Fonts,
 
-    #[arg(short, long, help=
-r#"Set a gradient
-use a gradient instead of regular colors : -g "\#ffaabb" -g "\#ee22ff" ..."#
-    )]
+    /// Set a gradient instead of regular colors : -g "#ffaabb" -g "#ee22ff" ..."
+    #[arg(short, long, verbatim_doc_comment)]
     pub gradient: Vec<String>,
 
-    #[arg(short, long, help=
-r#"Set the utc offset 
-If this argument is not supplied, we will try to use the local time
-Supplied as +/-<secs>. Eg: tuime -u="-3600", tuime -u="+7200"
-"#)]
+    /// Set the utc offset
+    ///
+    /// If this argument is not supplied, we will try to use the local time
+    /// Supplied as +/-<secs>. Eg: tuime -u="-3600", tuime -u="+7200"
+    #[arg(short, long, verbatim_doc_comment)]
     pub utc_offset: Option<i32>,
 
-    #[arg(short, long, help="Screensaver mode")]
+    /// Screensaver mode
+    #[arg(short, long)]
     pub screensaver: bool,
 }

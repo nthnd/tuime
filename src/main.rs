@@ -1,6 +1,5 @@
 use anyhow::Result;
 use clap::Parser;
-use config::Config;
 
 use std::time::Duration;
 use tokio::time::interval;
@@ -13,12 +12,16 @@ use crossterm::{
 
 use futures::{FutureExt, StreamExt};
 
+use crate::config::Config;
+use crate::args::Args;
+
 mod args;
 mod config;
 mod display;
 mod error;
 
-use args::Args;
+mod colors;
+mod fonts;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -30,7 +33,7 @@ async fn main() -> Result<()> {
         cursor::Hide
     }?;
 
-    let cfg = Config::new(&args.font, args.colors.clone());
+    let cfg = Config::new(&args.font, &args.colors);
     let mut reader = EventStream::new();
     let mut interval = interval(Duration::from_secs(1));
 

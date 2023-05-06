@@ -5,6 +5,7 @@ use chrono::{FixedOffset, Utc};
 use crossterm::{cursor, style::Print, terminal, QueueableCommand};
 
 use crate::{args::Args, error::TuimeError, config::Config};
+use crate::colors::ColorsVecNTWrapper;
 
 pub fn get_time_str(args: &Args, cfg: &Config) -> String {
     let time = match args.utc_offset.as_ref() {
@@ -18,9 +19,9 @@ pub fn get_time_str(args: &Args, cfg: &Config) -> String {
     let time_str = render(Options {
         text: time,
         align: Align::Center,
-        font: cfg.font.to_owned(),
+        font: cfg.font.to_owned().into(),
         gradient: args.gradient.clone(),
-        colors: cfg.color.to_owned(),
+        colors: ColorsVecNTWrapper(cfg.color.to_owned()).into(),
         ..Options::default()
     });
 

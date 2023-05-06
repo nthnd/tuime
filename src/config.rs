@@ -7,10 +7,10 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(font: &Fonts, color: &Vec<Colors>) -> Self {
+    pub fn new(font: &Fonts, color: &[Colors]) -> Self {
         Self {
-            font: font.clone(),
-            color: color.clone(),
+            font: font.to_owned(),
+            color: color.to_owned(),
         }
     }
 }

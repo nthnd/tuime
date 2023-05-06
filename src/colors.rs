@@ -55,8 +55,8 @@ impl From<Colors> for cfonts::Colors {
 /// Colors vector new type wrapper
 pub struct ColorsVecNTWrapper(pub Vec<Colors>);
 
-impl Into<Vec<cfonts::Colors>> for ColorsVecNTWrapper {
-    fn into(self) -> Vec<cfonts::Colors> {
-        self.0.iter().map(|c| (*c).into()).collect()
+impl From<ColorsVecNTWrapper> for Vec<cfonts::Colors> {
+    fn from(c: ColorsVecNTWrapper) -> Self {
+        c.0.iter().map(|c| (*c).into()).collect()
     }
 }

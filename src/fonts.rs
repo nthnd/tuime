@@ -17,9 +17,9 @@ pub enum Fonts {
 	FontTiny,
 }
 
-impl Into<cfonts::Fonts> for Fonts {
-    fn into(self) -> cfonts::Fonts {
-        match self {
+impl From<Fonts> for cfonts::Fonts {
+    fn from(f: Fonts) -> Self {
+        match f {
             Fonts::FontConsole => cfonts::Fonts::FontConsole,
             Fonts::FontBlock => cfonts::Fonts::FontBlock,
             Fonts::FontSimpleBlock => cfonts::Fonts::FontSimpleBlock,

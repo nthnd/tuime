@@ -2,19 +2,19 @@ use clap::ValueEnum;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Fonts {
-	FontConsole,
-	FontBlock,
-	FontSimpleBlock,
-	FontSimple,
-	Font3d,
-	FontSimple3d,
-	FontChrome,
-	FontHuge,
-	FontShade,
-	FontSlick,
-	FontGrid,
-	FontPallet,
-	FontTiny,
+    FontConsole,
+    FontBlock,
+    FontSimpleBlock,
+    FontSimple,
+    Font3d,
+    FontSimple3d,
+    FontChrome,
+    FontHuge,
+    FontShade,
+    FontSlick,
+    FontGrid,
+    FontPallet,
+    FontTiny,
 }
 
 impl From<Fonts> for cfonts::Fonts {

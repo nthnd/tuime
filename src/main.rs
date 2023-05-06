@@ -12,8 +12,8 @@ use crossterm::{
 
 use futures::{FutureExt, StreamExt};
 
-use crate::config::Config;
 use crate::args::Args;
+use crate::config::Config;
 
 mod args;
 mod config;

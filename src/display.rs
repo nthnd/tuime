@@ -4,8 +4,8 @@ use cfonts::{render, Align, Options};
 use chrono::{FixedOffset, Utc};
 use crossterm::{cursor, style::Print, terminal, QueueableCommand};
 
-use crate::{args::Args, error::TuimeError, config::Config};
 use crate::colors::ColorsVecNTWrapper;
+use crate::{args::Args, config::Config, error::TuimeError};
 
 pub fn get_time_str(args: &Args, cfg: &Config) -> String {
     let time = match args.utc_offset.as_ref() {

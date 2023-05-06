@@ -1,5 +1,5 @@
-use clap::Parser;
 use crate::{colors::Colors, fonts::Fonts};
+use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -17,13 +17,7 @@ pub struct Args {
 
     /// Set the font
     /// To see what fonts you can use, go to https://github.com/dominikwilkowski/cfonts"
-    #[arg(
-        short, 
-        long, 
-        value_enum,
-        default_value_t = Fonts::FontBlock,
-        verbatim_doc_comment
-    )]
+    #[arg(short, long, value_enum, default_value_t = Fonts::FontBlock, verbatim_doc_comment)]
     pub font: Fonts,
 
     /// Set a gradient instead of regular colors : -g "#ffaabb" -g "#ee22ff" ..."

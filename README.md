@@ -4,7 +4,8 @@
 
 A simple clock for your terminal made using Rust  
 ## Installation
-If you have the Rust toolchain
+
+### Cargo 
 ```sh 
 cargo install --git=https://github.com/nate-sys/tuime
 
@@ -16,7 +17,13 @@ cargo build --release
 mv ./target/release/tuime /usr/local/bin/tuime
 ```
 
-If you don't have the rust toolchain, there are pre-built binaries in the releases section.
+### Nix
+```sh 
+nix profile install github:nate-sys/tuime
+```
+
+### Other
+Download the appropriate binary from the [releases section](https://github.com/nate-sys/tuime/releases)
 
 ## Usage
 

@@ -44,19 +44,18 @@ pub fn print_time(args: &Args, cfg: &Config) -> Result<(), TuimeError> {
     };
     let mut stdout = std::io::stdout();
 
-    //crossterm::queue!(stdout, terminal::Clear(terminal::ClearType::All),).unwrap();
     for (line_nr, line) in time_str.iter().enumerate() {
         stdout
-            .queue(cursor::MoveTo(
-                0,
-                (line_nr + (height - highest_col) / 2)
-                    .try_into()
-                    .map_err(|_| TuimeError::WindowTooSmall(width, height))?,
-            ))
-            .unwrap();
-        crossterm::queue!(stdout, Print(line),).unwrap();
+        .queue(cursor::MoveTo(
+            0,
+            (line_nr + (height - highest_col) / 2)
+            .try_into()
+            .map_err(|_| TuimeError::WindowTooSmall(width, height))?,
+        ))
+        .unwrap();
+        crossterm::queue!(stdout, terminal::Clear(terminal::ClearType::CurrentLine), Print(line)).unwrap();
+        stdout.flush().unwrap();
     }
 
-    stdout.flush().unwrap();
     Ok(())
 }

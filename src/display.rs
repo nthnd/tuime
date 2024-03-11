@@ -2,6 +2,7 @@ use std::io::Write;
 
 use cfonts::{render, Align, Options};
 use chrono::{FixedOffset, Utc};
+use crossterm::terminal::{BeginSynchronizedUpdate, EndSynchronizedUpdate};
 use crossterm::{cursor, style::Print, terminal, QueueableCommand};
 
 use crate::colors::ColorsVecNTWrapper;
@@ -43,7 +44,8 @@ pub fn print_time(args: &Args, cfg: &Config) -> Result<(), TuimeError> {
         return Err(TuimeError::WindowTooSmall(width, height));
     };
     let mut stdout = std::io::stdout();
-
+    //stdout.queue(terminal::Clear(terminal::ClearType::All)).unwrap();
+    stdout.queue(BeginSynchronizedUpdate).unwrap();
     for (line_nr, line) in time_str.iter().enumerate() {
         stdout
         .queue(cursor::MoveTo(
@@ -53,9 +55,10 @@ pub fn print_time(args: &Args, cfg: &Config) -> Result<(), TuimeError> {
             .map_err(|_| TuimeError::WindowTooSmall(width, height))?,
         ))
         .unwrap();
-        crossterm::queue!(stdout, terminal::Clear(terminal::ClearType::CurrentLine), Print(line)).unwrap();
-        stdout.flush().unwrap();
+        crossterm::queue!(stdout,  Print(line), terminal::Clear(terminal::ClearType::UntilNewLine)).unwrap();
+        //stdout.flush().unwrap();
     }
-
+    stdout.queue(EndSynchronizedUpdate).unwrap()
+        .flush().unwrap();
     Ok(())
 }

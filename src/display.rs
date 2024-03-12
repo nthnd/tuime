@@ -6,7 +6,6 @@ use crossterm::terminal::{BeginSynchronizedUpdate, EndSynchronizedUpdate};
 use crossterm::{cursor, style::Print, terminal, QueueableCommand};
 
 use crate::colors::ColorsVecNTWrapper;
-use crate::config;
 use crate::{args::Args, config::Config, error::TuimeError};
 
 pub fn get_time_str(args: &Args, cfg: &Config) -> String {
@@ -48,12 +47,12 @@ pub fn print_time(args: &Args, cfg: &Config) -> Result<(), TuimeError> {
     };
     let mut stdout = std::io::stdout();
     
+    stdout.queue(BeginSynchronizedUpdate).unwrap();
     if height != cfg.height.get() || width != cfg.width.get() {
         stdout.queue(terminal::Clear(terminal::ClearType::All)).unwrap();
         cfg.height.set(height);
         cfg.width.set(width);
     }
-    stdout.queue(BeginSynchronizedUpdate).unwrap();
     for (line_nr, line) in time_str.iter().enumerate() {
         stdout
         .queue(cursor::MoveTo(

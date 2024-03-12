@@ -1,9 +1,12 @@
+use std::cell::Cell;
 use crate::colors::Colors;
 use crate::fonts::Fonts;
 
 pub struct Config {
     pub font: Fonts,
     pub color: Vec<Colors>,
+    pub height: Cell<usize>,
+    pub width: Cell<usize>,
 }
 
 impl Config {
@@ -11,6 +14,8 @@ impl Config {
         Self {
             font: font.to_owned(),
             color: color.to_owned(),
+            width: Cell::new(0),
+            height: Cell::new(0)
         }
     }
 }
